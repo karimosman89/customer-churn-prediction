@@ -30,4 +30,12 @@ Install dependencies:
 
 
 
-        python src/model.py        
+        python src/model.py
+
+
+### Evaluation
+The model is evaluated using:
+- **Accuracy**
+- **Precision**
+- **Recall**
+- **F1 Score**         
