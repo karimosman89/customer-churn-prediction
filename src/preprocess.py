@@ -14,7 +14,7 @@ def preprocess_data(df):
     """
     # Drop unnecessary columns (e.g., customer ID)
     print("Original DataFrame columns:", df.columns.tolist())
-    df.drop(['customerID'], axis=1, inplace=True)
+    #df.drop(['customerID'], axis=1, inplace=True)
 
     # Convert 'TotalCharges' to numeric, handling errors
     df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
