@@ -1,37 +1,44 @@
-
-import pickle
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, accuracy_score
-from src.preprocess import load_data, preprocess_data, split_data
-from src.utils import save_model
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from preprocess import preprocess_data
+from utils import load_data
 
-def train_model(X_train, y_train):
-    """Train a logistic regression model."""
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_train, y_train)
-    return model
+# Load and preprocess data
+data_path = '../data/customer_churn.csv'
+df = load_data(data_path)
+X_train, X_test, y_train, y_test, label_encoders, scaler = preprocess_data(df)
 
-def evaluate_model(model, X_test, y_test):
-    """Evaluate the model and print accuracy and classification report."""
-    predictions = model.predict(X_test)
-    accuracy = accuracy_score(y_test, predictions)
-    report = classification_report(y_test, predictions)
-    print("Accuracy:", accuracy)
-    print("Classification Report:\n", report)
+# Choose a model - Logistic Regression for simplicity
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, y_train)
 
-def main():
-    # Load and preprocess data
-    df = load_data('../data/churn_data.csv')  # Path to the data file
-    X, y = preprocess_data(df)
-    X_train, X_test, y_train, y_test = split_data(X, y)
-    
-    # Train and evaluate model
-    model = train_model(X_train, y_train)
-    evaluate_model(model, X_test, y_test)
-    
-    # Save the trained model
-    save_model(model, '../models/churn_model.pkl')
+# Predictions and evaluation
+y_pred = model.predict(X_test)
 
-if __name__ == "__main__":
-    main()
+# Evaluation metrics
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
 
+print(f"Model Evaluation:\n Accuracy: {accuracy}\n Precision: {precision}\n Recall: {recall}\n F1 Score: {f1}")
+
+def predict_churn(new_data):
+    """
+    Predict churn for a new customer record.
+
+    Parameters:
+        new_data (pd.DataFrame): New customer data as a DataFrame.
+
+    Returns:
+        int: Churn prediction (0 for 'No', 1 for 'Yes').
+    """
+    # Encode and scale new data
+    for col, le in label_encoders.items():
+        if col in new_data.columns:
+            new_data[col] = le.transform(new_data[col])
+    new_data = scaler.transform(new_data)
+
+    return model.predict(new_data)
