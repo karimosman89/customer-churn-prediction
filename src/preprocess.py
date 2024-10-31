@@ -34,10 +34,14 @@ def preprocess_data(df):
 
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
+     
     # Normalize numerical features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
-
+     # Save processed data to CSV files
+    X_train.to_csv('data/X_train.csv', index=False)
+    X_test.to_csv('data/X_test.csv', index=False)
+    y_train.to_csv('data/y_train.csv', index=False)
+    y_test.to_csv('data/y_test.csv', index=False)
     return X_train, X_test, y_train, y_test, label_encoders, scaler
