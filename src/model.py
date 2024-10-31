@@ -6,7 +6,7 @@ from src.preprocess import preprocess_data
 from src.utils import load_data
 
 # Load and preprocess data
-data_path = '../data/customer_churn.csv'
+data_path = 'data/customer_churn.csv'
 df = load_data(data_path)
 X_train, X_test, y_train, y_test, label_encoders, scaler = preprocess_data(df)
 
