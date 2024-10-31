@@ -1,35 +1,43 @@
-
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-
-def load_data(file_path):
-    """Load data from CSV file."""
-    return pd.read_csv(file_path)
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 def preprocess_data(df):
-    """Clean and preprocess the dataset."""
-    # Drop unnecessary columns, if any
-    df = df.drop(columns=['customerID'], errors='ignore')
-    
-    # Convert categorical columns to numeric
+    """
+    Preprocess the data for training.
+
+    Parameters:
+        df (pd.DataFrame): The raw dataset.
+
+    Returns:
+        X_train, X_test, y_train, y_test: Preprocessed data split into training and testing sets.
+    """
+    # Drop unnecessary columns (e.g., customer ID)
+    df.drop(['customerID'], axis=1, inplace=True)
+
+    # Convert 'TotalCharges' to numeric, handling errors
     df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
-    df = df.fillna(df.mean())  # Fill missing values in TotalCharges
-    
-    # Encode categorical variables
-    df = pd.get_dummies(df, drop_first=True)
-    
-    # Separate features and target
-    X = df.drop(columns=['Churn_Yes'])
-    y = df['Churn_Yes']
-    
-    # Standardize features
+    df.dropna(inplace=True)  # Drop any rows with missing values after conversion
+
+    # Encode categorical columns
+    label_encoders = {}
+    categorical_cols = df.select_dtypes(include=['object']).columns
+
+    for col in categorical_cols:
+        le = LabelEncoder()
+        df[col] = le.fit_transform(df[col])
+        label_encoders[col] = le
+
+    # Split features and target
+    X = df.drop('Churn', axis=1)
+    y = df['Churn']
+
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+    # Normalize numerical features
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    
-    return X_scaled, y
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
 
-def split_data(X, y, test_size=0.2, random_state=42):
-    """Split the data into training and testing sets."""
-    return train_test_split(X, y, test_size=test_size, random_state=random_state)
-
+    return X_train, X_test, y_train, y_test, label_encoders, scaler
