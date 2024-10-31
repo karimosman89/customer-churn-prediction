@@ -6,17 +6,13 @@ from src.preprocess import preprocess_data
 from src.utils import load_data
 
 # Load and preprocess data
-X_train = pd.read_csv('data/X_train.csv')
-y_train = pd.read_csv('data/y_train.csv').values.ravel() 
-df = load_data(X_train,y_train)
+data_path = 'data/customer_churn.csv'
+df = load_data(data_path)
 X_train, X_test, y_train, y_test, label_encoders, scaler = preprocess_data(df)
 
 # Choose a model - Logistic Regression for simplicity
 model = LogisticRegression(max_iter=200)
 model.fit(X_train, y_train)
-
-X_test = pd.read_csv('data/X_test.csv')
-y_test = pd.read_csv('data/y_test.csv').values.ravel()
 
 # Predictions and evaluation
 y_pred = model.predict(X_test)

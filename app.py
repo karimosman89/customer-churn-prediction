@@ -4,9 +4,6 @@ import numpy as np
 from src.preprocess import preprocess_data
 from src.model import predict_churn, model, label_encoders, scaler
 
-# Load model and preprocessing encoders/scalers
-# In this example, the model and preprocessors are pre-trained and loaded directly from memory.
-
 # Streamlit app layout
 st.title("Customer Churn Prediction App")
 st.write("""
@@ -64,11 +61,16 @@ def user_input_features():
 # Get user input
 input_df = user_input_features()
 
-# Preprocess the input data
-for col, le in label_encoders.items():
-    if col in input_df.columns:
-        input_df[col] = le.transform(input_df[col])
+categorical_columns = input_df.select_dtypes(include=['object']).columns
+for col in categorical_columns:
+    if col in label_encoders:
+        # Use the label encoder if it exists
+        input_df[col] = label_encoders[col].transform(input_df[col])
+    else:
+        # Manually encode binary columns like 'Yes/No' that may have been missed
+        input_df[col] = input_df[col].apply(lambda x: 1 if x == 'Yes' else 0)
 
+# Now that input_df is fully numeric, apply the scaler
 input_df = scaler.transform(input_df)
 
 # Predict churn using the trained model

@@ -1,16 +1,13 @@
-
-
 import pandas as pd
 
-def load_data(X, y):
+def load_data(filepath: str):
     """
-    Combine features and labels into a single DataFrame.
+    Load the dataset from a CSV file.
 
     Parameters:
-        X (pd.DataFrame): Feature DataFrame.
-        y (pd.Series): Target labels.
+        filepath (str): Path to the CSV file.
 
     Returns:
-        pd.DataFrame: Combined DataFrame of features and target labels.
+        pd.DataFrame: Loaded dataset as a pandas DataFrame.
     """
-    return pd.concat([X, pd.Series(y, name='Churn')], axis=1)
+    return pd.read_csv(filepath)
