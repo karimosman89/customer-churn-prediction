@@ -3,7 +3,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from src.preprocess import preprocess_data
-from utils import load_data
+from src.utils import load_data
 
 # Load and preprocess data
 data_path = '../data/customer_churn.csv'
