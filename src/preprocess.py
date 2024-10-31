@@ -13,7 +13,8 @@ def preprocess_data(df):
         X_train, X_test, y_train, y_test: Preprocessed data split into training and testing sets.
     """
     # Drop unnecessary columns (e.g., customer ID)
-    df.drop(['CustomerID'], axis=1, inplace=True)
+    print("Original DataFrame columns:", df.columns.tolist())
+    df.drop(['customerID'], axis=1, inplace=True)
 
     # Convert 'TotalCharges' to numeric, handling errors
     df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
