@@ -6,4 +6,4 @@ seaborn
 streamlit
 catboost
 lightgbm
-
+xgboost
