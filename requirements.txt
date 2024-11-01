@@ -5,5 +5,5 @@ matplotlib
 seaborn
 streamlit
 catboost
-
+lightgbm
 
