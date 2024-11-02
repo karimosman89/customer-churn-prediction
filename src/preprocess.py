@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
+import numpy as np
 
 def preprocess_data(df):
     """
@@ -12,17 +13,16 @@ def preprocess_data(df):
     Returns:
         X_train, X_test, y_train, y_test: Preprocessed data split into training and testing sets.
     """
-    # Drop unnecessary columns (e.g., customer ID)
-    df.drop(['customerID'], axis=1, inplace=True)
-
-    # Convert 'TotalCharges' to numeric, handling errors
+    # Drop customerID column
+    df = df.drop(columns=['customerID'])
+    
+    # Handle 'TotalCharges' conversion
     df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
     df.dropna(inplace=True)  # Drop any rows with missing values after conversion
 
     # Encode categorical columns
     label_encoders = {}
     categorical_cols = df.select_dtypes(include=['object']).columns
-
     for col in categorical_cols:
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col])
@@ -41,3 +41,4 @@ def preprocess_data(df):
     X_test = scaler.transform(X_test)
 
     return X_train, X_test, y_train, y_test, label_encoders, scaler
+
