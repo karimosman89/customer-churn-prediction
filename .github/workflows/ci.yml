@@ -37,7 +37,7 @@ jobs:
       # Run model training
       - name: Train model
         run: |
-          python -c "from src.model import model; model.fit(X_train, y_train)"
+          python -c "from src.model import main; main.fit(X_train, y_train)"
 
       # Optional: Run tests or validation scripts if you have any
       # - name: Run tests
